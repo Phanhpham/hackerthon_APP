@@ -1,0 +1,179 @@
+#include<stdio.h>
+#include<string.h>
+#define MAX_CONTACTS 100
+struct Contact{
+    char startDate[50];
+    char endDate[50];
+    char content[100];
+};
+
+struct Contact todoList[MAX_CONTACTS];
+int Count = 0;
+void displayMenu(){
+    printf("************ MENU ****************\n");
+    printf("1. In toan bộ danh sách Todo ở trong mảng todoList trên cùng 1 hàng \n");
+    printf("2. Thuc hiện chức năng thêm mới todo vào vị trí cuoi cùng của todoList,thongo tin todo mơi do người dunng nhap vao\n");
+    printf("3. Thuc hiện chức năng cap nhât thông tin cua một todo.Cho người dùng nhập vào nội dung của todo muốn chỉnh sửa, nếu tìm thấy thì cho người dùng tiền hành nhap vào thông tin mới ,nếu không thấy thì in ra màn hình \n");
+    printf("4. Xoa một todo,cho nguoi dung dùng nhap vào nội dung cua todo muốn xoá nếu thấy thì cho người dùng xoá todo ấy còn không tìm thấy thì in ra màn hinh \n");
+    printf("5. Thuc hien sap xep và in ra danh sách todoList đã duoc sap xep tang dan\n");
+    printf("6. Tim kiem và in ra thong tin của Todo\n");
+    printf("7. tim kiem và in ra toan bo cua cac todo theo status\n");
+    printf("0. Thoat chuong trinh\n");
+    printf("*********************************\n");
+}
+
+void displayAllContacts(){
+    printf("Danh sach lien he:\n");
+    for(int i = 0; i < contactCount; i++){
+        printf("%s - %s\n", contactList[i].name, contactList[i].phone);
+    }
+}
+
+void addNewContact(){
+    struct Contact newContact;
+    printf("Nhap ten lien he: ");
+    scanf("%s", newContact.name);
+    printf("Nhap so dien thoai: ");
+    scanf("%s", newContact.phone);
+    contactList[contactCount++] = newContact;
+    printf("Lien he da duoc them.\n");
+}
+
+void updateContact(){
+    char searchName[50];
+    printf("Nhap ten lien he muon chinh sua: ");
+    scanf("%s", searchName);
+    int foundIndex = -1;
+    for(int i = 0; i < contactCount; i++){
+        if(strcmp(contactList[i].name, searchName) == 0){
+            foundIndex = i;
+            break;
+        }
+    }
+    if(foundIndex != -1){
+        printf("Nhap thong tin moi cho lien he:\n");
+        printf("Nhap ten lien he: ");
+        scanf("%s", contactList[foundIndex].name);
+        printf("Nhap so dien thoai: ");
+        scanf("%s", contactList[foundIndex].phone);
+        printf("Thong tin lien he duoc cap nhap.\n");
+    } else{
+        printf("khong tim thay lien he.\n");
+    }
+}
+
+void deleteContact(){
+    char deleteName[50];
+    printf("Nhap ten lien he muon xoa: ");
+    scanf("%s", deleteName);
+    int foundIndex = -1;
+    for(int i = 0; i < contactCount; i++){
+        if(strcmp(contactList[i].name, deleteName) == 0){
+            foundIndex = i;
+            break;
+        }
+    }
+    if(foundIndex != -1){
+        for(int i = foundIndex; i < contactCount - 1; i++){
+            contactList[i] = contactList[i + 1];
+        }
+        contactCount--;
+        printf("Lien he da duoc xoa.\n");
+    } else{
+        printf("Khong tim thay lien he.\n");
+    }
+}
+
+void bubbleSortContacts(){
+    for(int i = 0; i < contactCount - 1; i++){
+        for(int j = 0; j < contactCount - i - 1; j++){
+            if(strcmp(contactList[j].name, contactList[j + 1].name) > 0){
+                struct Contact temp = contactList[j];
+                contactList[j] = contactList[j + 1];
+                contactList[j + 1] = temp;
+            }
+        }
+    }
+    printf("danh sach lien he duoc sap xep.\n");
+}
+
+void binarySearchContact(){
+    char searchName[50];
+    printf("Nhap ten lien he can tim kiem: ");
+    scanf("%s", searchName);
+    int left = 0, right = contactCount - 1;
+    int foundIndex = -1;
+    while (left <= right){
+        int mid = (left + right) / 2;
+        if(strcmp(contactList[mid].name, searchName) == 0){
+            foundIndex = mid;
+            break;
+        }else if(strcmp(contactList[mid].name, searchName) < 0){
+            left = mid + 1;
+        }else{
+            right = mid - 1;
+        }
+    }
+
+    if(foundIndex != -1){
+        printf("Lien he duoc tim thay: %s - %s\n", contactList[foundIndex].name, contactList[foundIndex].phone);
+    }else{
+        printf("Khong tim thay lien he.\n");
+    }
+}
+
+void linearSearchContact(){
+    char searchName[50];
+    printf("nhap ten lien he can tim kiem: ");
+    scanf("%s", searchName);
+    int found = 0;
+    for(int i = 0; i < contactCount; i++){
+        if(strcmp(contactList[i].name, searchName) == 0){
+            printf("%s - %s\n", contactList[i].name, contactList[i].phone);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found){
+        printf("Khong tim thay lien he.\n");
+    }
+}
+
+int main(){
+    int choice;
+    do {
+        displayMenu();
+        printf("lua chon chuc nang: ");
+        scanf("%d", &choice);
+        switch (choice){
+            case 1:
+                displayAllContacts();
+                break;
+            case 2:
+                addNewContact();
+                break;
+            case 3:
+                updateContact();
+                break;
+            case 4:
+                deleteContact();
+                break;
+            case 5:
+                bubbleSortContacts();
+                break;
+            case 6:
+                binarySearchContact();
+                break;
+            case 7:
+                linearSearchContact();
+                break;
+            case 0:
+                printf("Thoat chuong trinh.\n");
+                break;
+            default:
+                printf("lua chon khong hop ly, vui long chon lai.\n");
+        }
+    } while (choice != 0);
+    return 0;
+}
